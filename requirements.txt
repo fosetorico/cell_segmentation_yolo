@@ -1,0 +1,9 @@
+dill==0.3.5.1
+# pickle
+from-root
+notebook
+gdown
+flask-cors
+flask
+ultralytics
+-e .
