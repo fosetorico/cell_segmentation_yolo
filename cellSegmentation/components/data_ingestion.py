@@ -7,7 +7,7 @@ from cellSegmentation.exception import AppException
 from cellSegmentation.entity.config_entity import DataIngestionConfig
 from cellSegmentation.entity.artifacts_entity import DataIngestionArtifact
 
-
+ 
 class DataIngestion:
     def __init__(self, data_ingestion_config: DataIngestionConfig = DataIngestionConfig()):
         try:
@@ -37,23 +37,37 @@ class DataIngestion:
         except Exception as e:
             raise AppException(e, sys)
 
-    def extract_zip_file(self,zip_file_path: str)-> str:
-        """
-        zip_file_path: str
-        Extracts the zip file into the data directory
-        Function returns None
-        """
-        try:
-            feature_store_path = self.data_ingestion_config.feature_store_file_path
-            os.makedirs(feature_store_path, exist_ok=True)
-            with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
-                zip_ref.extractall(feature_store_path)
+    def extract_zip_file(self, zip_file_path: str) -> str:
+            """
+            zip_file_path: str
+            Extracts the zip file into the data directory.
+            Ensures files are directly under feature_store without intermediate directories.
+            Function returns the feature store path.
+            """
+            try:
+                feature_store_path = self.data_ingestion_config.feature_store_file_path
+                os.makedirs(feature_store_path, exist_ok=True)
 
-            logging.info(f"Extracting zip file: {zip_file_path} into dir: {feature_store_path}")
-            return feature_store_path
+                with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
+                    for member in zip_ref.namelist():
+                        # Get the member's filename without the root directory (e.g., "cell_data/")
+                        member_filename = os.path.relpath(member, start=os.path.commonpath(zip_ref.namelist()))
+                        destination = os.path.join(feature_store_path, member_filename)
+                        
+                        # Check if it is a file or directory
+                        if member.endswith('/'):
+                            # Create directories as needed
+                            os.makedirs(destination, exist_ok=True)
+                        else:
+                            # Extract the file into the correct path
+                            with zip_ref.open(member) as source, open(destination, 'wb') as target:
+                                target.write(source.read())
 
-        except Exception as e:
-            raise AppException(e, sys)
+                logging.info(f"Extracted zip file: {zip_file_path} into dir: {feature_store_path}")
+                return feature_store_path
+
+            except Exception as e:
+                raise AppException(e, sys)
         
     def initiate_data_ingestion(self)-> DataIngestionArtifact:
         logging.info("Entered initiate_data_ingestion method of Data_Ingestion class")
