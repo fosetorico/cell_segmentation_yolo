@@ -125,38 +125,3 @@ class ModelTrainer:
 
         except Exception as e:
             raise AppException(e, sys)
-
-
-
-    # def initiate_model_trainer(self,) -> ModelTrainerArtifact:
-    #     logging.info("Entered initiate_model_trainer method of ModelTrainer class")
-
-    #     try:
-    #         logging.info("Unzipping data")
-    #         shutil.unpack_archive("data.zip", ".")
-    #         os.remove("data.zip")
-           
-    #         os.system(f"yolo task=segment mode=train model={self.model_trainer_config.weight_name} data=data.yaml epochs={self.model_trainer_config.no_epochs} imgsz=640 save=true")
-
-    #         os.makedirs(self.model_trainer_config.model_trainer_dir, exist_ok=True)
-    #         os.system(f"cp runs/segment/train/weights/best.pt {self.model_trainer_config.model_trainer_dir}/")
-           
-    #         shutil.rmtree("yolov8s-seg.pt", ignore_errors=True)
-    #         shutil.rmtree("train", ignore_errors=True)
-    #         shutil.rmtree("valid", ignore_errors=True)
-    #         shutil.rmtree("test", ignore_errors=True)
-    #         shutil.rmtree("runs", ignore_errors=True)
-    #         os.remove("data.yaml")
-
-    #         model_trainer_artifact = ModelTrainerArtifact(
-    #             trained_model_file_path="artifacts/model_trainer/best.pt",
-    #         )
-
-    #         logging.info("Exited initiate_model_trainer method of ModelTrainer class")
-    #         logging.info(f"Model trainer artifact: {model_trainer_artifact}")
-
-    #         return model_trainer_artifact
-
-    #     except Exception as e:
-    #         raise AppException(e, sys)
-
