@@ -1,4 +1,4 @@
-import sys,os
+import sys,os, shutil
 from cellSegmentation.pipeline.training_pipeline import TrainPipeline
 from cellSegmentation.utils.main_utils import decodeImage, encodeImageIntoBase64
 from flask import Flask, request, jsonify, render_template,Response
@@ -32,7 +32,8 @@ def predictRoute():
         os.system("yolo task=segment mode=predict model=artifacts/model_trainer/best.pt conf=0.25 source=data/inputImage.jpg save=true")
         opencodedbase64 = encodeImageIntoBase64("runs/segment/predict/inputImage.jpg")
         result = {"image": opencodedbase64.decode('utf-8')}
-        os.system("rm -rf runs")
+        # os.system("rm -rf runs")
+        shutil.rmtree("runs", ignore_errors=True)
 
     except ValueError as val:
         print(val)
