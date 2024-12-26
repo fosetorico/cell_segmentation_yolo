@@ -39,7 +39,7 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/cell_seg:latest
+        tags: ${{ secrets.DOCKER_USERNAME }}/cell_segmentation:latest
 
     - name: Image digest
       run: echo ${{ steps.build-and-publish.outputs.digest }}
